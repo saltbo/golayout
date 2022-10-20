@@ -1,8 +1,13 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"golayout/pkg/database/mysql"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
+	DB *mysql.Config
 }
 
 func New() (*Config, error) {

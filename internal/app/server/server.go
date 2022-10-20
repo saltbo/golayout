@@ -3,27 +3,33 @@ package server
 import (
 	"context"
 
+	v1 "golayout/api/helloworld/v1"
+	"golayout/internal/pkg/config"
 	"golayout/internal/service"
-	"golayout/pkg/config"
+
+	"google.golang.org/grpc"
 )
 
 type Server struct {
 	cfg *config.Config
 
-	setups []service.SvcSetup
+	grpcSrv *grpc.Server
 }
 
-func NewServer(cfg *config.Config, setups []service.SvcSetup) *Server {
+func NewServer() (*Server, error) {
+	return wireNewServer()
+}
+
+func newServer(cfg *config.Config, grpcSrv *grpc.Server, ss *service.Services) (*Server, error) {
+	v1.RegisterGreeterServer(grpcSrv, ss.Book)
+
 	return &Server{
-		cfg:    cfg,
-		setups: setups,
-	}
+		cfg:     cfg,
+		grpcSrv: grpcSrv,
+	}, nil
 }
 
 func (s *Server) Run(ctx context.Context) error {
-	for _, setup := range s.setups {
-		setup.Setup(ctx)
-	}
 
 	return nil
 }

@@ -38,7 +38,7 @@ func main() {
 
 func newApp() *cobra.Command {
 	var rootCmd = &cobra.Command{
-		Use:   "lse-servicemesh",
+		Use:   "golayout",
 		Short: "A brief description of your application",
 		// Uncomment the following line if your bare application
 		// has an action associated with it:

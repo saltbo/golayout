@@ -1,10 +1,7 @@
 package serve
 
 import (
-	"fmt"
-
 	"golayout/internal/app/server"
-	"golayout/pkg/config"
 
 	"github.com/spf13/cobra"
 )
@@ -14,14 +11,12 @@ var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "run a new server",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		cfg, err := config.New()
+		s, err := server.NewServer()
 		if err != nil {
 			return err
 		}
 
-		fmt.Println(cfg)
-
-		return server.NewServer(cfg).Run(cmd.Context())
+		return s.Run(cmd.Context())
 	},
 }
 

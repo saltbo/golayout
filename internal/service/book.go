@@ -1,14 +1,23 @@
 package service
 
-import "context"
+import (
+	"context"
 
-type Book struct{}
+	v1 "golayout/api/helloworld/v1"
+	"golayout/internal/dao"
+)
 
-func NewBook() *Book {
-	return &Book{}
+type Book struct {
+	bookDao *dao.Book
 }
 
-func (b *Book) Setup(ctx context.Context) error {
+func NewBook(bookDao *dao.Book) *Book {
+	return &Book{
+		bookDao: bookDao,
+	}
+}
+
+func (b *Book) SayHello(ctx context.Context, request *v1.HelloRequest) (*v1.HelloReply, error) {
 	// TODO implement me
 	panic("implement me")
 }

@@ -4,27 +4,22 @@
 package server
 
 import (
+	"golayout/internal/dao"
+	"golayout/internal/pkg/config"
 	"golayout/internal/service"
-	"golayout/pkg/config"
 
 	"github.com/google/wire"
+	"google.golang.org/grpc"
 )
 
-func Init() *Server {
+func wireNewServer(option ...grpc.ServerOption) (*Server, error) {
 	wire.Build(
-		configConstruct,
-		wire.Value(service.Setups),
-		NewServer,
+		config.New,
+		dao.ProviderSet,
+		service.ProviderSet,
+		grpc.NewServer,
+		newServer,
 	)
 
-	return &Server{}
-}
-
-func configConstruct() *config.Config {
-	cfg, err := config.New()
-	if err != nil {
-		return nil
-	}
-
-	return cfg
+	return &Server{}, nil
 }

@@ -7,30 +7,28 @@
 package server
 
 import (
+	"golayout/internal/dao"
+	"golayout/internal/pkg/config"
 	"golayout/internal/service"
-	"golayout/pkg/config"
+	"google.golang.org/grpc"
 )
 
 // Injectors from wire.go:
 
-func Init() *Server {
-	config := configConstruct()
-	v := _wireValue
-	server := NewServer(config, v)
-	return server
-}
-
-var (
-	_wireValue = service.Setups
-)
-
-// wire.go:
-
-func configConstruct() *config.Config {
-	cfg, err := config.New()
+func wireNewServer(option ...grpc.ServerOption) (*Server, error) {
+	configConfig, err := config.New()
 	if err != nil {
-		return nil
+		return nil, err
 	}
-
-	return cfg
+	server := grpc.NewServer(option...)
+	book := dao.NewBook()
+	serviceBook := service.NewBook(book)
+	services := &service.Services{
+		Book: serviceBook,
+	}
+	serverServer, err := newServer(configConfig, server, services)
+	if err != nil {
+		return nil, err
+	}
+	return serverServer, nil
 }
